@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 build/
 develop-eggs/
@@ -56,5 +57,6 @@ Thumbs.db
 *.h5
 *.pkl
 *.joblib
-ml_engine/models/*.h5
-ml_engine/models/*.pkl
+
+# ML Datasets
+ml_engine/data/
