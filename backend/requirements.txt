@@ -1,0 +1,27 @@
+# Django Core
+Django==5.0.1
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+psycopg2-binary==2.9.9
+
+# Authentication
+djangorestframework-simplejwt==5.3.1
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Environment Variables
+python-decouple==3.8
+
+# Async Tasks
+celery==5.3.6
+redis==5.0.1
+
+# Utilities
+Pillow==10.2.0
+requests==2.31.0
+
+# Development
+python-dotenv==1.0.0
