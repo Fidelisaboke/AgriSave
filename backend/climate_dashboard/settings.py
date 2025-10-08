@@ -5,7 +5,8 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-9a)xb(l91hh6+3rn7f6hwdw0+b+lw_o)-)nxuz((v^@ux^3+jm')
+# In climate_dashboard/settings.py
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
 

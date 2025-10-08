@@ -123,25 +123,58 @@ class GreenPoint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # Auto-assign points based on activity type
+        from django.db import transaction
+        from django.db.models import F
+        
+        # Auto-assign points based on activity type if not set
         if not self.points_earned:
             self.points_earned = self.POINT_VALUES.get(self.activity_type, 0)
-        super().save(*args, **kwargs)
         
-        # Update user's total green points
-        if self.verified:
-            profile = self.user.profile
-            profile.total_green_points = sum(
-                gp.points_earned for gp in self.user.green_points.filter(verified=True)
-            )
-            # Update badge tier
-            if profile.total_green_points >= 500:
-                profile.badge_tier = 'platinum'
-            elif profile.total_green_points >= 300:
-                profile.badge_tier = 'gold'
-            elif profile.total_green_points >= 150:
-                profile.badge_tier = 'silver'
-            profile.save()
+        # Get the original verified state before saving
+        if self.pk:
+            try:
+                original = type(self).objects.get(pk=self.pk)
+                self._original_verified = original.verified
+            except type(self).DoesNotExist:
+                self._original_verified = False
+        else:
+            self._original_verified = False
+            
+        # Check if this is a new verification
+        is_new_verification = (not self._original_verified and self.verified)
+        
+        # Save the GreenPoint instance
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            
+            # If this is a new verification, update the user's points
+            if is_new_verification:
+                
+                # Use select_for_update to lock the profile row during the update
+                profile = (
+                    UserProfile.objects
+                    .select_for_update()
+                    .get(user=self.user)
+                )
+                
+                # Calculate new points and update in a single operation
+                new_points = profile.total_green_points + self.points_earned
+                
+                # Determine new badge tier
+                if new_points >= 500:
+                    new_tier = 'platinum'
+                elif new_points >= 300:
+                    new_tier = 'gold'
+                elif new_points >= 150:
+                    new_tier = 'silver'
+                else:
+                    new_tier = 'bronze'
+                
+                # Update both fields in a single save
+                UserProfile.objects.filter(pk=profile.pk).update(
+                    total_green_points=new_points,
+                    badge_tier=new_tier
+                )
 
     def __str__(self):
         return f"{self.user.username} - {self.activity_type} ({self.points_earned} pts)"

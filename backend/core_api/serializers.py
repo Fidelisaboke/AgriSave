@@ -51,7 +51,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # Create user
         user = User.objects.create_user(
             username=validated_data['username'],
-            email=validated_data['email'],
+            email=validated_data.get('email', ''),
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', '')
@@ -85,6 +85,20 @@ class CropSerializer(serializers.ModelSerializer):
         # Automatically set user from request context
         user = self.context['request'].user
         validated_data['user'] = user
+        
+        # Set default points based on activity type if not provided
+        activity_points = {
+            'crop_planted': 20,
+            'water_saved': 15,
+            'soil_improvement': 25,
+            'pest_control': 15,
+            'biodiversity': 30
+        }
+        
+        if 'points_earned' not in validated_data:
+            activity_type = validated_data.get('activity_type', '')
+            validated_data['points_earned'] = activity_points.get(activity_type, 10)  # Default 10 points
+            
         return super().create(validated_data)
 
 
@@ -126,3 +140,20 @@ class GreenPointSerializer(serializers.ModelSerializer):
         # Automatically set user from request context
         user = self.context['request'].user
         validated_data['user'] = user
+        
+        # Set default points based on activity type if not provided
+        activity_points = {
+            'crop_planted': 20,
+            'water_saved': 15,
+            'soil_improvement': 25,
+            'pest_control': 15,
+            'biodiversity': 30
+        }
+        
+        # Set points_earned if not provided
+        if 'points_earned' not in validated_data:
+            activity_type = validated_data.get('activity_type', '')
+            validated_data['points_earned'] = activity_points.get(activity_type, 10)  # Default 10 points
+            
+        # Create and return the instance
+        return super().create(validated_data)
