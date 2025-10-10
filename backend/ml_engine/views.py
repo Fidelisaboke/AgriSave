@@ -47,7 +47,8 @@ def predict_disease(request):
             {'error': str(e)},
             status=status.HTTP_503_SERVICE_UNAVAILABLE
         )
-    except Exception:
+    except Exception as e:
+        logging.error(f"Unexpected error in predict_disease: {e}")
         return Response(
             {'error': 'An unexpected error occurred.'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR

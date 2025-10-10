@@ -27,7 +27,7 @@ def predict_disease(image_file):
     image = tf.image.resize(image, [224, 224])
     img_array = keras.preprocessing.image.img_to_array(image)
     img_batch = np.expand_dims(img_array, axis=0)
-    img_preprocessed = preprocess_input(img_batch)
+    img_preprocessed = preprocess_input(np.copy(img_batch))
 
     # Get prediction
     prediction = model.predict(img_preprocessed)
