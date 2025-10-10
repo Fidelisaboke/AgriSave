@@ -2,9 +2,13 @@
 
 This app handles all machine learning operations for AgriSave.
 
-## Current Status (Day 2)
+## Current Status
 
-All endpoints return **mock data** for testing and development purposes.
+- Models for disease detection and crop recommendation are implemented and integrated.
+- Endpoints for disease detection and crop recommendation are functional.
+- Climate forecasting model training has been implemented but not integrated to the API endpoint.
+- The climate forecasting endpoint returns mock data. A mechanism for fetching real historical weather data needs to be 
+implemented.
 
 ## Endpoints
 
@@ -15,28 +19,24 @@ All endpoints return **mock data** for testing and development purposes.
 
 ## Day 3 Implementation Plan
 
-### Disease Detection
-- Model: MobileNetV2 or ResNet50 fine-tuned on PlantVillage dataset
+### Crop Disease Detection
+- Model: MobileNetV2 fine-tuned on PlantVillage dataset
 - Input: Leaf images (224x224)
 - Output: Disease name, confidence score, treatment recommendation
 
 ### Crop Recommendation
-- Model: Random Forest or XGBoost
+- Model: Random Forest Classifier
 - Input: Soil type, rainfall, temperature, pH level
 - Output: Top 3 recommended crops with suitability scores
 
 ### Climate Forecasting
-- Model: LSTM or Prophet
+- Model: LSTM
 - Input: Location, historical weather data
 - Output: 7-30 day forecast with temperature, rainfall, humidity
 
 ## Model Storage
 
-Models will be stored in `ml_engine/models/` directory:
-- `disease_detector.h5` - CNN for disease detection
-- `crop_recommender.pkl` - Random Forest for crop recommendations
-- `climate_forecaster.h5` - LSTM for climate prediction
-
-## Dependencies (Day 3)
-
-Additional packages needed:
+Models will be stored in `media/models/` directory:
+- `disease_detector/best_disease_detector.keras` - MobileNetV2 fine-tuned for crop disease detection
+- `crop_recommendation/crop_recommender.pkl` - Random Forest for crop recommendations
+- `climate_forecasting/best_climate_forecaster.keras` - LSTM for climate prediction

@@ -91,8 +91,15 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Media files
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ML models directory
+ML_MODELS_DIR = os.path.join(MEDIA_ROOT, 'ml_models')
+
+# ML datasets directory
+DATASETS_DIR = os.path.join(BASE_DIR, 'ml_engine', 'data')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
