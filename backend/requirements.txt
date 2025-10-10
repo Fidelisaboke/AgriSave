@@ -19,9 +19,18 @@ python-decouple==3.8
 celery==5.3.6
 redis==5.0.1
 
+# AI/ML
+joblib==1.5.2
+pandas==2.3.3
+numpy==2.3.3
+scikit-learn==1.7.2
+tensorflow==2.20.0
+keras==3.11.3
+
 # Utilities
 Pillow==10.2.0
 requests==2.31.0
 
 # Development
 python-dotenv==1.0.0
+python-decouple==3.8

@@ -1,25 +1,29 @@
 from django.contrib import admin
+
 from .models import (
-    DiseaseDetectionModel,
-    CropRecommendationModel,
-    ClimateForecastingModel,
+    DiseaseDetector,
+    CropRecommender,
+    ClimateForecaster,
 )
 
-@admin.register(DiseaseDetectionModel)
+
+@admin.register(DiseaseDetector)
 class DiseaseDetectionModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'version', 'model_file', 'created_at', 'updated_at')
     search_fields = ('name', 'version')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
 
-@admin.register(CropRecommendationModel)
+
+@admin.register(CropRecommender)
 class CropRecommendationModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'version', 'model_file', 'created_at', 'updated_at')
     search_fields = ('name', 'version')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
 
-@admin.register(ClimateForecastingModel)
+
+@admin.register(ClimateForecaster)
 class ClimateForecastingModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'version', 'model_file', 'created_at', 'updated_at')
     search_fields = ('name', 'version')

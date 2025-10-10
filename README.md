@@ -126,6 +126,19 @@ Expected output:
 - `agrisave_django` - Django API server
 - `agrisave_celery` - Celery worker
 
+### Step 5: Train ML models
+```bash
+# Climate forecaster
+docker-compose exec django_api python manage.py train_climate_forecaster
+
+# Crop recommender
+docker-compose exec django_api python manage.py train_crop_recommender
+
+# Disease detector
+docker-compose exec django_api python manage.py train_disease_detector
+```
+- The model artifacts will be saved within `backend/media/models/`.
+
 Access the API:
 - **API**: http://localhost:8000/api/
 - **Admin Panel**: http://localhost:8000/admin/

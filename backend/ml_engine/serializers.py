@@ -1,8 +1,9 @@
 from rest_framework import serializers
+
 from .models import (
-    DiseaseDetectionModel,
-    CropRecommendationModel,
-    ClimateForecastingModel,
+    DiseaseDetector,
+    CropRecommender,
+    ClimateForecaster,
 )
 
 
@@ -13,11 +14,13 @@ class DiseasePredictionSerializer(serializers.Serializer):
 
 class CropRecommendationSerializer(serializers.Serializer):
     """Serializer for crop recommendation input"""
-    soil_type = serializers.CharField(max_length=50, required=True)
-    rainfall = serializers.FloatField(required=True)
+    N = serializers.FloatField(required=True, min_value=0.0)
+    P = serializers.FloatField(required=True, min_value=0.0)
+    K = serializers.FloatField(required=True, min_value=0.0)
     temperature = serializers.FloatField(required=True)
-    ph_level = serializers.FloatField(required=False)
-    location = serializers.CharField(max_length=200, required=False)
+    humidity = serializers.FloatField(required=True, min_value=0.0, max_value=100.0)
+    ph = serializers.FloatField(required=True, min_value=0.0, max_value=14.0)
+    rainfall = serializers.FloatField(required=True, min_value=0.0)
 
 
 class ClimateForecastSerializer(serializers.Serializer):
@@ -27,21 +30,21 @@ class ClimateForecastSerializer(serializers.Serializer):
 
 
 class BaseMLModelSerializer(serializers.Serializer):
-
     class Meta:
         fields = ['id', 'name', 'version', 'model_file', 'full_path', 'created_at', 'updated_at']
         read_only_fields = ['id', 'full_path', 'created_at']
 
 
-class DiseaseDetectionModelSerializer(BaseMLModelSerializer):
+class DiseaseDetectorSerializer(BaseMLModelSerializer):
     class Meta(BaseMLModelSerializer.Meta):
-        model = DiseaseDetectionModel
+        model = DiseaseDetector
 
-class CropRecommendationModelSerializer(BaseMLModelSerializer):
-    class Meta(BaseMLModelSerializer.Meta):
-        model = CropRecommendationModel
 
-class ClimateForecastingModelSerializer(BaseMLModelSerializer):
+class CropRecommenderSerializer(BaseMLModelSerializer):
     class Meta(BaseMLModelSerializer.Meta):
-        model = ClimateForecastingModel
-        
+        model = CropRecommender
+
+
+class ClimateForecasterSerializer(BaseMLModelSerializer):
+    class Meta(BaseMLModelSerializer.Meta):
+        model = ClimateForecaster

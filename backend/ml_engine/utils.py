@@ -2,68 +2,59 @@
 Utility functions for ML Engine
 These will be used when integrating real ML models
 """
+import logging
 import os
 from pathlib import Path
 
-
-def get_model_path(model_name):
-    """Get the full path to a model file"""
-    base_dir = Path(__file__).resolve().parent
-    model_dir = base_dir / 'models'
-    return model_dir / model_name
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def load_disease_model():
+def fetch_image_paths_from_directory(dataset_path: Path) -> tuple:
     """
-    Load the disease detection model
-    To be implemented on Day 3
+    Scans a directory to load image paths and their corresponding labels.
+
+    This function assumes a directory structure where each subdirectory
+    represents a class name and contains the images for that class.
+
+    Args:
+        dataset_path (str): The path to the root dataset directory.
+
+    Returns:
+        tuple: A tuple containing:
+            - list: A list of image paths.
+            - list: A list of integer labels corresponding to each image.
+            - list: A sorted list of class names found in the directory.
     """
-    # model_path = get_model_path('disease_detector.h5')
-    # model = load_model(model_path)
-    # return model
-    return None
+    image_paths = []
+    labels = []
 
+    if not dataset_path.is_dir():
+        logging.error(f"Dataset path '{dataset_path}' does not exist or is not a directory.")
+        return [], [], []
 
-def load_crop_recommendation_model():
-    """
-    Load the crop recommendation model
-    To be implemented on Day 3
-    """
-    # model_path = get_model_path('crop_recommender.pkl')
-    # model = joblib.load(model_path)
-    # return model
-    return None
+    # Discover and sort class names from the folder names
+    class_names = sorted([d.name for d in os.scandir(dataset_path) if d.is_dir()])
+    if not class_names:
+        logging.warning(f"No subdirectories found in '{dataset_path}'. No classes to load.")
+        return [], [], []
 
+    logging.info(f"Found {len(class_names)} classes: {class_names}")
 
-def load_climate_model():
-    """
-    Load the climate forecasting model
-    To be implemented on Day 3
-    """
-    # model_path = get_model_path('climate_forecaster.h5')
-    # model = load_model(model_path)
-    # return model
-    return None
+    # Create a mapping from class name to integer index
+    class_to_idx = {name: i for i, name in enumerate(class_names)}
 
+    # Iterate over each class directory
+    for class_name in class_names:
+        class_dir = dataset_path / class_name
+        image_extensions = ["*.jpg", "*.jpeg", "*.png", "*.JPG", "*.JPEG", "*.PNG"]
+        files_found = []
 
-def preprocess_leaf_image(image):
-    """
-    Preprocess leaf image for disease detection
-    To be implemented on Day 3
-    """
-    # from PIL import Image
-    # import numpy as np
-    # img = Image.open(image)
-    # img = img.resize((224, 224))
-    # img_array = np.array(img) / 255.0
-    # return np.expand_dims(img_array, axis=0)
-    return None
+        for ext in image_extensions:
+            files_found.extend(class_dir.glob(ext))
 
+        for image_file in files_found:
+            image_paths.append(str(image_file))
+            labels.append(class_to_idx[class_name])
 
-def format_prediction_result(prediction, confidence):
-    """Format ML prediction results"""
-    return {
-        'prediction': prediction,
-        'confidence': float(confidence),
-        'reliable': confidence > 0.8
-    }
+    logging.info(f"Successfully loaded {len(image_paths)} images and {len(labels)} labels.")
+    return image_paths, labels, class_names
