@@ -109,8 +109,11 @@ def climate_forecast(request):
     except RuntimeError as e:
         return Response({'error': str(e)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     except Exception as e:
-        return Response({'error': f'An unexpected error occurred: {str(e)}'},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.error(f"Unexpected error in climate_forecast: {e}")
+        return Response(
+            {'error': 'An unexpected error occurred'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['GET'])
