@@ -62,8 +62,9 @@ def run_crop_recommendation_training():
 
     # Print classification report
     y_pred = model.predict(X_test)
-    report = classification_report(y_test, y_pred, target_names=label_encoder.classes_)
-    logging.info(f"Crop Recommender Classification Report:\n {report}")
+    report_str = classification_report(y_test, y_pred, target_names=label_encoder.classes_)
+    report_dict = classification_report(y_test, y_pred, target_names=label_encoder.classes_, output_dict=True)
+    logging.info(f"Crop Recommender Classification Report:\n {report_str}")
 
     # Save the trained model
     model_path = model_save_dir / 'crop_recommender.pkl'
@@ -76,6 +77,6 @@ def run_crop_recommendation_training():
         name="Crop Recommender",
         version="1.0",
         model_file=str(relative_path),
-        metrics=report,
+        metrics=report_dict,
     )
     logging.info(f"[SUCCESS] Saved trained model metadata to the database.")

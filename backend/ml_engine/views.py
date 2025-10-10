@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
@@ -5,9 +7,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
 
+from .apps import MlEngineConfig
 from .serializers import CropRecommendationSerializer
 from .services import inference
-from .apps import MlEngineConfig
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
@@ -75,7 +79,8 @@ def recommend_crop(request):
             {'error': str(e)},
             status=status.HTTP_503_SERVICE_UNAVAILABLE
         )
-    except Exception:
+    except Exception as e:
+        logger.error(f"Unexpected error in recommend_crop: {e}")
         return Response(
             {'error': 'An unexpected error occurred.'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR

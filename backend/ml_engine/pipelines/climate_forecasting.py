@@ -124,14 +124,17 @@ def run_climate_forecasting_training():
     logging.info(f"Temperature Prediction RMSE: {rmse:.4f}")
 
     # Save the training job metadata to the database
-    relative_path = checkpoint_path.relative_to(settings.MEDIA_ROOT)
-    ClimateForecaster.objects.create(
-        name="Climate Forecaster",
-        version="1.0",
-        model_file=str(relative_path),
-        metrics={
-            "test_loss": float(loss),
-            "temperature_rmse": float(rmse)
-        },
-    )
-    logging.info(f"[SUCCESS] Saved trained model metadata to the database.")
+    if checkpoint_path.exists():
+        relative_path = checkpoint_path.relative_to(settings.MEDIA_ROOT)
+        ClimateForecaster.objects.create(
+            name="Climate Forecaster",
+            version="1.0",
+            model_file=str(relative_path),
+            metrics={
+                "test_loss": float(loss),
+                "temperature_rmse": float(rmse)
+            },
+        )
+        logging.info(f"[SUCCESS] Saved trained model metadata to the database.")
+    else:
+        logging.error(f"Model file {checkpoint_path} was not created. Database record not saved.")
