@@ -126,7 +126,15 @@ Expected output:
 - `agrisave_django` - Django API server
 - `agrisave_celery` - Celery worker
 
-### Step 5: Train ML models
+### Step 5: Load Datasets
+Ensure you download and place the datasets in the `backend/ml_engine/data/raw` directory for ML model training. 
+
+The datasets are:
+-  PlantVillage Dataset: [Download Link](https://www.kaggle.com/datasets/emmarex/plantdisease)
+- Nairobi Weather Data: [Download Link](https://www.kaggle.com/datasets/johnkiriba/nairobi-weather-data)
+- Crop Recommendation Dataset: [Download Link](https://www.kaggle.com/datasets/atharvaingle/crop-recommendation-dataset)
+
+### Step 6: Train ML models
 ```bash
 # Climate forecaster
 docker-compose exec django_api python manage.py train_climate_forecaster
