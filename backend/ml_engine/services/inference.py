@@ -17,7 +17,12 @@ def predict_disease(image_file):
     if not model or not class_names:
         raise RuntimeError("Disease model is not loaded.")
 
-    image = Image.open(io.BytesIO(image_file.read())).resize((224, 224))
+    image = Image.open(io.BytesIO(image_file.read()))
+
+    # Convert to RGB to ensure 3 channels (handles grayscale or RGBA images)
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+    image = image.resize((224, 224))
     img_array = np.array(image) / 255.0
     img_batch = np.expand_dims(img_array, 0)  # Create a batch
 

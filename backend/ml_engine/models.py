@@ -21,7 +21,9 @@ class BaseMLModel(models.Model):
 
     @property
     def full_path(self):
-        return os.path.join(settings.MEDIA_ROOT, str(self.model_file))
+        if self.model_file:
+            return self.model_file.path
+        return None
 
     class Meta:
         abstract = True

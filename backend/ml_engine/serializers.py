@@ -29,7 +29,7 @@ class ClimateForecastSerializer(serializers.Serializer):
     days = serializers.IntegerField(default=7, min_value=1, max_value=30)
 
 
-class BaseMLModelSerializer(serializers.Serializer):
+class BaseMLModelSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id', 'name', 'version', 'model_file', 'full_path', 'created_at', 'updated_at']
         read_only_fields = ['id', 'full_path', 'created_at']

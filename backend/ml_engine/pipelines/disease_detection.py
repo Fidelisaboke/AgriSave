@@ -41,7 +41,7 @@ def configure_dataset(filenames, labels, shuffle=False):
     if shuffle:
         dataset = dataset.shuffle(buffer_size=len(filenames))
     dataset = dataset.map(parse_image, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(32)
+    dataset = dataset.batch(16)
     dataset = dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
     return dataset
 
@@ -123,8 +123,12 @@ def run_disease_detection_training():
     )
 
     # Evaluate the model
-    loss, accuracy = model.evaluate(val_dataset)
-    logging.info(f"Validation Loss: {loss:.4f}, Validation Accuracy: {accuracy:.4f}")
+    try:
+        loss, accuracy = model.evaluate(val_dataset)
+        logging.info(f"Validation Loss: {loss:.4f}, Validation Accuracy: {accuracy:.4f}")
+    except Exception as e:
+        logging.error(f"Error during model evaluation: {e}")
+        loss, accuracy = float('inf'), 0.0
 
     # Save the training job metadata to the database
     relative_path = checkpoint_path.relative_to(settings.MEDIA_ROOT)
