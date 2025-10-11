@@ -30,13 +30,9 @@ def predict_disease(request):
 
     try:
         prediction_result = inference.predict_disease(image_file)
-        disease_name = prediction_result.get('disease', 'Unknown')
-
-        # TODO: Add recommendations based on the predicted class
 
         response_data = {
-            'disease': disease_name.replace('___', ' ').replace('_', ' '),
-            'confidence': prediction_result.get('confidence', 0.0),
+            'prediction': prediction_result,
             'timestamp': datetime.now().isoformat(),
         }
 
@@ -57,7 +53,7 @@ def predict_disease(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def recommend_crop(request):
+def recommend_crops(request):
     """
     Recommend suitable crops based on soil and climate data.
     """
@@ -66,7 +62,7 @@ def recommend_crop(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        prediction_result = inference.recommend_crop(serializer.validated_data)
+        prediction_result = inference.recommend_crops(serializer.validated_data)
 
         response_data = {
             'inputs': serializer.validated_data,
