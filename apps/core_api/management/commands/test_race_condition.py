@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from core_api.models import GreenPoint, UserProfile
+from apps.core_api.models import GreenPoint, UserProfile
 import threading
 
 class Command(BaseCommand):

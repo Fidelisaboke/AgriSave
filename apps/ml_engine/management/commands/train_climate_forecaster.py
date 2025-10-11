@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ml_engine.pipelines.climate_forecasting import run_climate_forecasting_training
+from apps.ml_engine.pipelines.climate_forecasting import run_climate_forecasting_training
 
 
 class Command(BaseCommand):

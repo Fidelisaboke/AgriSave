@@ -9,7 +9,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "15432:5432"
     networks:
       - agrisave_network
     healthcheck:
@@ -55,7 +55,7 @@ services:
   celery:
     build: .
     container_name: agrisave_celery
-    command: celery -A climate_dashboard worker -l info
+    command: celery -A config worker -l info
     volumes:
       - .:/app
     env_file:

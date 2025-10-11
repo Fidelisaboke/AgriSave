@@ -27,8 +27,8 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
     # API Routes
-    path('api/', include('core_api.urls')),
-    path('api/ml/', include('ml_engine.urls')),
+    path('api/', include('apps.core_api.urls')),
+    path('api/ml/', include('apps.ml_engine.urls')),
 ]
 
 if settings.DEBUG:

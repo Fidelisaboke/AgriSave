@@ -5,7 +5,7 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# In climate_dashboard/settings.py
+# In config/settings.py
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
@@ -26,8 +26,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     
     # Local apps
-    'core_api',
-    'ml_engine',
+    'apps.core_api',
+    'apps.ml_engine',
 ]
 
 MIDDLEWARE = [
@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'climate_dashboard.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -59,19 +59,31 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'climate_dashboard.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': config('DB_NAME', default='agrisave_db'),
-        'USER': config('DB_USER', default='agrisave_user'),
-        'PASSWORD': config('DB_PASSWORD', default='agrisave_pass123'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+import dj_database_url
+
+# Use DATABASE_URL if provided (for Render/production), otherwise use individual settings
+DATABASE_URL = config('DATABASE_URL', default='')
+
+if DATABASE_URL:
+    # Use database URL (Render/production)
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    # Use individual database settings (development)
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': config('DB_NAME', default='agrisave_db'),
+            'USER': config('DB_USER', default='agrisave_user'),
+            'PASSWORD': config('DB_PASSWORD', default='agrisave_pass123'),
+            'HOST': 'postgres' if config('DOCKER_ENV', default='false') == 'true' else 'localhost',
+            'PORT': config('DB_PORT', default='5432'),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

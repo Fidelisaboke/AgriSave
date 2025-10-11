@@ -61,20 +61,23 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
-    
-    def get_queryset(self):
-        # Users can only see their own profile
-        return UserProfile.objects.filter(user=self.request.user)
 
+    def get_queryset(self):
+        # Short-circuit for Swagger schema generation and unauthenticated users
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return UserProfile.objects.none()
+        return UserProfile.objects.filter(user=self.request.user)
 
 class CropViewSet(viewsets.ModelViewSet):
     """ViewSet for Crop CRUD operations"""
     queryset = Crop.objects.all()
     serializer_class = CropSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
-        # Users can only see their own crops
+        # Short-circuit for Swagger schema generation and unauthenticated users
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return Crop.objects.none()
         return Crop.objects.filter(user=self.request.user)
     
     @action(detail=False, methods=['get'])

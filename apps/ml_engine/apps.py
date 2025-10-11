@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class MlEngineConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'ml_engine'
+    name = 'apps.ml_engine'
 
     # In-memory ML model registry
     REGISTRY = {
