@@ -1,15 +1,21 @@
-# 🌱 AgriSave - AI-Powered Climate Resilience Dashboard
+# 🌱 AgriSave: AI-Powered Climate Resilience Microservice
 
 A Django-based microservice platform integrating machine learning for climate prediction, crop health monitoring, and sustainable farming insights.
 
 ## 📋 Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [API Endpoints](#api-endpoints)
-- [Development](#development)
-- [Testing](#testing)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Setup Instructions](#-setup-instructions)
+- [API Endpoints](#-api-endpoints)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Database Models](#-database-models)
+- [Troubleshooting](#-troubleshooting)
+- [Contribution](#-contributing)
+- [License](#-license)
+- [Team](#-team)
+- [Support](#-suppprt)
 
 ## ✨ Features
 
@@ -86,16 +92,6 @@ DEBUG=True
 ```
 
 ### Step 3: Build and Run with Docker
-
-```bash
-# Make setup script executable
-chmod +x setup.sh
-
-# Run setup script
-./setup.sh
-```
-
-Or manually:
 
 ```bash
 # Build containers
@@ -312,29 +308,6 @@ curl -X POST http://localhost:8000/api/ml/predict-disease/ \
 - Sustainability activities tracking
 - Auto-calculated points based on activity type
 - Badge tier system (Bronze → Silver → Gold → Platinum)
-
-## 🎯 Current Status
-
-### ✅ Completed (Day 1 & 2)
-- Docker multi-container setup
-- PostgreSQL database integration
-- Django REST API with all CRUD endpoints
-- JWT authentication
-- User registration and profiles
-- Crop management system
-- Weather data endpoints
-- Green Points engine
-- ML placeholder endpoints
-- API documentation (Swagger/ReDoc)
-- Celery configuration
-
-### 🚧 Next Steps (Day 3 - Wednesday)
-- Integrate actual ML models
-- Disease detection with CNN
-- Climate forecasting with LSTM
-- Crop recommendation with Random Forest
-- Celery async tasks for ML inference
-- Redis caching for predictions
 
 ## 🔒 Security Notes
 
