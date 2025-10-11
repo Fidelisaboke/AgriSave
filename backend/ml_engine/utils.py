@@ -6,6 +6,8 @@ import logging
 import os
 from pathlib import Path
 
+from .constants import DISEASE_RECOMMENDATIONS
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -58,3 +60,25 @@ def fetch_image_paths_from_directory(dataset_path: Path) -> tuple:
 
     logging.info(f"Successfully loaded {len(image_paths)} images and {len(labels)} labels.")
     return image_paths, labels, class_names
+
+def is_plant_healthy(predicted_class):
+    """Check if the predicted class indicates a healthy plant."""
+    return "healthy" in predicted_class.lower()
+
+def calculate_severity(confidence):
+    """Calculate severity based on confidence score."""
+    if confidence >= 0.9:
+        return "Critical"
+    elif confidence >= 0.75:
+        return "High"
+    elif confidence >= 0.5:
+        return "Medium"
+    else:
+        return "Low"
+
+def get_recommendation_for_class(predicted_class):
+    """Fetch recommendations for a given disease class."""
+    if predicted_class in DISEASE_RECOMMENDATIONS:
+        return DISEASE_RECOMMENDATIONS[predicted_class]["steps"]
+        
+    return None

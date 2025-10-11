@@ -2,11 +2,14 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import io
+import requests
 from django.apps import apps
 
 import tensorflow as tf
 import keras
 from keras.applications.mobilenet_v2 import preprocess_input
+
+from ..utils import is_plant_healthy, calculate_severity, get_recommendation_for_class
 
 
 def get_artifact(name):
@@ -34,10 +37,31 @@ def predict_disease(image_file):
     confidence = float(np.max(prediction[0]))
     predicted_class = class_names[np.argmax(prediction[0])]
 
-    return {'disease': predicted_class, 'confidence': round(confidence, 4)}
+    # Get predicted class name
+    predicted_class_name = predicted_class.replace('___', ' ').replace('_', ' ')
+
+    # Predictions result dict
+    predictions_result = {
+        'predicted_class': predicted_class_name,
+        'confidence': round(confidence, 4),
+        'severity': 'Low',
+        'recommended_actions': None
+    }
+
+    # If healthy, return early
+    if is_plant_healthy(predicted_class):
+        return predictions_result
+    
+    # Set severity for non-healthy class
+    predictions_result['severity'] = calculate_severity(confidence)
+
+    # Get recommendations for non-healthy class
+    predictions_result['recommended_actions'] = get_recommendation_for_class(predicted_class)
+
+    return predictions_result
 
 
-def recommend_crop(data: dict):
+def recommend_crops(data: dict, top_n: int = 3):
     """Preprocesses input data and returns crop recommendations."""
     model = get_artifact('crop_model')
     scaler = get_artifact('crop_scaler')
@@ -49,11 +73,31 @@ def recommend_crop(data: dict):
     df = pd.DataFrame([data])
     scaled_df = scaler.transform(df)
 
-    prediction = model.predict(scaled_df)
-    predicted_crop = encoder.inverse_transform(prediction)[0]
+    # Get probabilities of all classes
+    prediction_proba = model.predict_proba(scaled_df)
 
-    return {'recommended_crop': predicted_crop}
+    # Get probabilities for first prediction
+    probabilities = prediction_proba[0]
 
+    # Get indices of the top N classes
+    top_n_indices = np.argsort(probabilities)[-top_n:]
+
+    # Reverse to get indices in descending order
+    top_n_indices = top_n_indices[::-1]
+
+    # Get the corresponding class names and confidence scores
+    top_crops = encoder.classes_[top_n_indices]
+    top_confidences = probabilities[top_n_indices]
+
+    # Format output
+    recommendations = []
+    for crop, confidence in zip(top_crops, top_confidences):
+        recommendations.append({
+            'crop': crop,
+            'confidence': round(float(confidence), 4)
+        })
+
+    return {'recommendations': recommendations}
 
 def forecast_climate(past_days_data: np.ndarray):
     """Takes a sequence of past weather data and forecasts the next day."""
