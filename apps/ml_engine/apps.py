@@ -5,7 +5,6 @@ from pathlib import Path
 import joblib
 from django.apps import AppConfig
 from django.conf import settings
-from keras.models import load_model
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -27,6 +26,9 @@ class MlEngineConfig(AppConfig):
         return
 
         # --- ML model loading code below is commented out ---
+        # Only import when ML is enabled
+        # from keras.models import load_model
+        
         # Disease detection artifacts
         # dd_path = Path(settings.ML_MODELS_DIR) / "disease_detection"
         # model_file = dd_path / "best_disease_detector.keras"
@@ -69,6 +71,7 @@ class MlEngineConfig(AppConfig):
         # if model_file.exists() and scaler_file.exists() and features_file.exists():
         #     logging.info("Climate Forecasting artifacts found, attempting to load model.")
         #     try:
+        #         from keras.models import load_model
         #         self.REGISTRY['climate_model'] = load_model(model_file)
         #         self.REGISTRY['climate_scaler'] = joblib.load(scaler_file)
         #         with open(features_file) as f:
