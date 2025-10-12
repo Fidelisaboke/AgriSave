@@ -14,16 +14,13 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt /app/
+# Install Python dependencies (use Heroku-specific requirements)
+COPY requirements-heroku.txt /app/
 RUN pip install --upgrade pip --root-user-action=ignore
-RUN pip install -r requirements.txt --root-user-action=ignore
+RUN pip install -r requirements-heroku.txt --root-user-action=ignore
 
 # Copy project
 COPY . /app/
-
-# Collect static files
-RUN python manage.py collectstatic --noinput || echo "Collectstatic failed, continuing..."
 
 # Expose port
 EXPOSE $PORT

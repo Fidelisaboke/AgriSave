@@ -1,0 +1,39 @@
+# Django Core
+Django==5.0.1
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.2.0
+
+# Authentication
+djangorestframework-simplejwt==5.3.1
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Environment Variables
+python-decouple==3.8
+
+# Async Tasks
+celery==5.3.6
+redis==5.0.1
+
+# Lightweight ML (without TensorFlow/Keras)
+joblib==1.5.2
+pandas==2.3.3
+numpy==2.3.3
+scikit-learn==1.7.2
+
+# Utilities
+Pillow==10.2.0
+requests==2.31.0
+
+# Production
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Development
+python-dotenv==1.0.0
+python-decouple==3.8
