@@ -22,9 +22,11 @@ RUN pip install -r requirements.txt --root-user-action=ignore
 # Copy project
 COPY . /app/
 
+# Collect static files
+RUN python manage.py collectstatic --noinput || echo "Collectstatic failed, continuing..."
 
 # Expose port
-EXPOSE 8000
+EXPOSE $PORT
 
-# Run migrations and start server
-CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+# Use Heroku's PORT environment variable
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
